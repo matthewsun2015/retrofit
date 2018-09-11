@@ -190,7 +190,7 @@ public final class RetrofitTest {
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e).hasMessage(
-          "'retrofit2.Response' is not a valid response body type. Did you mean ResponseBody?\n"
+          "Response must include generic type (e.g., Response<String>)\n"
               + "    for method CallMethod.badType1");
     }
   }
