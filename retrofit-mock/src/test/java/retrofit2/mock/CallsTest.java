@@ -15,16 +15,15 @@
  */
 package retrofit2.mock;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Test;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -290,5 +289,29 @@ public final class CallsTest {
       }
     });
     assertSame(failure, failureRef.get());
+  }
+
+  @Test public void responseInvocation() {
+    Call<String> response = Calls.response("abc");
+    assertThat(response.invocation().method().getName()).isEqualTo("response");
+    assertThat(response.invocation().arguments()).isEqualTo(Arrays.asList("abc"));
+  }
+
+  @Test public void failureInvocation() {
+    IOException exception = new IOException();
+    Call<Object> failure = Calls.failure(exception);
+    assertThat(failure.invocation().method().getName()).isEqualTo("failure");
+    assertThat(failure.invocation().arguments()).isEqualTo(Arrays.asList(exception));
+  }
+
+  @Test public void deferInvocation() {
+    Callable<Call<Void>> callable = new Callable<Call<Void>>() {
+      @Override public Call<Void> call() {
+        throw new UnsupportedOperationException();
+      }
+    };
+    Call<Void> defer = Calls.defer(callable);
+    assertThat(defer.invocation().method().getName()).isEqualTo("defer");
+    assertThat(defer.invocation().arguments()).isEqualTo(Arrays.asList(callable));
   }
 }

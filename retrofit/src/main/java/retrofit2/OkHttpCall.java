@@ -31,7 +31,7 @@ import static retrofit2.Utils.throwIfFatal;
 
 final class OkHttpCall<T> implements Call<T> {
   private final RequestFactory requestFactory;
-  private final @Nullable Object[] args;
+  private final Invocation invocation;
   private final okhttp3.Call.Factory callFactory;
   private final Converter<ResponseBody, T> responseConverter;
 
@@ -44,17 +44,17 @@ final class OkHttpCall<T> implements Call<T> {
   @GuardedBy("this")
   private boolean executed;
 
-  OkHttpCall(RequestFactory requestFactory, @Nullable Object[] args,
+  OkHttpCall(RequestFactory requestFactory, Invocation invocation,
       okhttp3.Call.Factory callFactory, Converter<ResponseBody, T> responseConverter) {
     this.requestFactory = requestFactory;
-    this.args = args;
+    this.invocation = invocation;
     this.callFactory = callFactory;
     this.responseConverter = responseConverter;
   }
 
   @SuppressWarnings("CloneDoesntCallSuperClone") // We are a final type & this saves clearing state.
   @Override public OkHttpCall<T> clone() {
-    return new OkHttpCall<>(requestFactory, args, callFactory, responseConverter);
+    return new OkHttpCall<>(requestFactory, invocation, callFactory, responseConverter);
   }
 
   @Override public synchronized Request request() {
@@ -81,6 +81,10 @@ final class OkHttpCall<T> implements Call<T> {
       creationFailure = e;
       throw new RuntimeException("Unable to create request.", e);
     }
+  }
+
+  @Override public Invocation invocation() {
+    return invocation;
   }
 
   @Override public void enqueue(final Callback<T> callback) {
@@ -187,7 +191,7 @@ final class OkHttpCall<T> implements Call<T> {
   }
 
   private okhttp3.Call createRawCall() throws IOException {
-    okhttp3.Call call = callFactory.newCall(requestFactory.create(args));
+    okhttp3.Call call = callFactory.newCall(requestFactory.create(invocation));
     if (call == null) {
       throw new NullPointerException("Call.Factory returned null.");
     }

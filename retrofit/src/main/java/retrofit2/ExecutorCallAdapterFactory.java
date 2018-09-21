@@ -107,5 +107,9 @@ final class ExecutorCallAdapterFactory extends CallAdapter.Factory {
     @Override public Request request() {
       return delegate.request();
     }
+
+    @Override public Invocation invocation() {
+      return delegate.invocation();
+    }
   }
 }

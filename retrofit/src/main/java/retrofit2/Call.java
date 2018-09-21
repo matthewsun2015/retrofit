@@ -70,4 +70,7 @@ public interface Call<T> extends Cloneable {
 
   /** The original HTTP request. */
   Request request();
+
+  /** The service method invocation that created this call. */
+  Invocation invocation();
 }

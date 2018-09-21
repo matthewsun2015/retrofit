@@ -24,6 +24,7 @@ import javax.annotation.concurrent.GuardedBy;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Invocation;
 import retrofit2.Response;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -51,6 +52,10 @@ final class BehaviorCall<T> implements Call<T> {
 
   @Override public Request request() {
     return delegate.request();
+  }
+
+  @Override public Invocation invocation() {
+    return delegate.invocation();
   }
 
   @SuppressWarnings("ConstantConditions") // Guarding public API nullability.

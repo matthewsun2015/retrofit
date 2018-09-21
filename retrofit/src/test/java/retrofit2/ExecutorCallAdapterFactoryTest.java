@@ -166,5 +166,9 @@ public final class ExecutorCallAdapterFactoryTest {
     @Override public Request request() {
       throw new UnsupportedOperationException();
     }
+
+    @Override public Invocation invocation() {
+      throw new UnsupportedOperationException();
+    }
   }
 }

@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -143,7 +145,11 @@ public final class Retrofit {
             if (platform.isDefaultMethod(method)) {
               return platform.invokeDefaultMethod(method, service, proxy, args);
             }
-            return loadServiceMethod(method).invoke(args);
+            List<Object> argsList = args != null
+                ? Arrays.asList(args)
+                : Collections.emptyList();
+            Invocation invocation = new Invocation(method, argsList);
+            return loadServiceMethod(method).invoke(invocation);
           }
         });
   }

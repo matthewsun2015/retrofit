@@ -2767,8 +2767,9 @@ public final class RequestFactoryTest {
     Retrofit retrofit = builder.callFactory(callFactory).build();
 
     Method method = TestingUtils.onlyMethod(cls);
+    Invocation invocation = new Invocation(method, Arrays.asList(args));
     try {
-      return RequestFactory.parseAnnotations(retrofit, method).create(args);
+      return RequestFactory.parseAnnotations(retrofit, method).create(invocation);
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
